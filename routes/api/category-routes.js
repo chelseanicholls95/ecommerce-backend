@@ -11,20 +11,25 @@ router.get("/", async (req, res) => {
     const categories = await Category.findAll({
       include: [{ model: Product }],
     });
-    res.json(categories);
-  } catch {
-    res.status(400).json(err);
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to get all categories." });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const category = await Category.findByPk(req.params.id, {
+    const { id } = req.params;
+    const category = await Category.findByPk(id, {
       include: [{ model: Product }],
     });
-    res.json(category);
-  } catch {
-    res.status(400).json(err);
+    if (!category) {
+      res.status(404).json({ message: "No user with this id." });
+    }
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get category" });
   }
 });
 
@@ -32,8 +37,15 @@ router.post("/", (req, res) => {
   // create a new category
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   // update a category by its `id` value
+  try {
+    const data = await Category.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+  } catch (error) {}
 });
 
 router.delete("/:id", (req, res) => {
