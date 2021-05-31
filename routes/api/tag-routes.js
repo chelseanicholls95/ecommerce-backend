@@ -31,16 +31,45 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
-  // create a new tag
+router.post("/", async (req, res) => {
+  try {
+    const { tag_name } = req.body;
+    const tag = await Tag.create({
+      tag_name,
+    });
+    res.status(200).json(tag);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to create tag" });
+  }
 });
 
-router.put("/:id", (req, res) => {
-  // update a tag's name by its `id` value
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tag_name } = req.body;
+    const tag = await Tag.update(
+      { tag_name },
+      {
+        where: { id },
+      }
+    );
+    res.status(200).json(tag);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update tag" });
+  }
 });
 
-router.delete("/:id", (req, res) => {
-  // delete on tag by its `id` value
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tag = await Tag.destroy({
+      where: { id },
+    });
+    res.status(200).json(tag);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete tag" });
+  }
 });
 
 module.exports = router;
