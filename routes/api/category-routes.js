@@ -29,6 +29,7 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(category);
   } catch (error) {
+    console.error(error.message);
     res.status(500).json({ error: "Failed to get category" });
   }
 });
@@ -39,13 +40,6 @@ router.post("/", (req, res) => {
 
 router.put("/:id", async (req, res) => {
   // update a category by its `id` value
-  try {
-    const data = await Category.update(req.body, {
-      where: {
-        id: req.params.id,
-      },
-    });
-  } catch (error) {}
 });
 
 router.delete("/:id", (req, res) => {
