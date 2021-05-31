@@ -50,10 +50,13 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { body } = req;
-    const category = await Category.update(body, {
-      where: { id },
-    });
+    const { category_name } = req.body;
+    const category = await Category.update(
+      { category_name },
+      {
+        where: { id },
+      }
+    );
     res.status(200).json(category);
   } catch (error) {
     res.status(500).json({ error: "Failed to update category" });
