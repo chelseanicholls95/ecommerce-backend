@@ -34,12 +34,30 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
-  // create a new category
+router.post("/", async (req, res) => {
+  try {
+    const { category_name } = req.body;
+    const category = await Category.create({
+      category_name,
+    });
+    res.status(200).json(category);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to create category" });
+  }
 });
 
 router.put("/:id", async (req, res) => {
-  // update a category by its `id` value
+  try {
+    const { id } = req.params;
+    const { body } = req;
+    const category = await Category.update(body, {
+      where: { id },
+    });
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update category" });
+  }
 });
 
 router.delete("/:id", (req, res) => {
