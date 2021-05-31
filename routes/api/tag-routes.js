@@ -1,27 +1,45 @@
-const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
-  // find all tags
-  // be sure to include its associated Product data
+router.get("/", async (req, res) => {
+  try {
+    const tags = await Tag.findAll({
+      include: [{ model: Product }],
+    });
+    res.status(200).json(tags);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to get all tags." });
+  }
 });
 
-router.get('/:id', (req, res) => {
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tag = await Tag.findByPk(id, {
+      include: [{ model: Product }],
+    });
+    if (!tag) {
+      res.status(404).json({ message: "No tag with this id." });
+    }
+    res.status(200).json(tag);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to get tag" });
+  }
 });
 
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
   // create a new tag
 });
 
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // update a tag's name by its `id` value
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   // delete on tag by its `id` value
 });
 
