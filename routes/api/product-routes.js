@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { Category, Product, ProductTag } = require("../../models");
+const { Category, Product, ProductTag, Tag } = require("../../models");
 
 const router = Router();
 
@@ -35,35 +35,32 @@ router.get("/:id", async (req, res) => {
 });
 
 // create a new product
-router.post("/", (req, res) => {
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4]
+router.post("/", async (req, res) => {
+  try {
+    const newProduct = {
+      product_name: req.body.product_name,
+      price: req.body.price,
+      stock: req.body.stock,
+      tagIds: req.body.tagIds,
+    };
+
+    const product = await Product.create(newProduct);
+
+    if (req.body.tagIds.length) {
+      const productTagIdArr = req.body.tagIds.map((tag_id) => {
+        return {
+          product_id: product.id,
+          tag_id,
+        };
+      });
+      await ProductTag.bulkCreate(productTagIdArr);
     }
-  */
-  Product.create(req.body)
-    .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
-        const productTagIdArr = req.body.tagIds.map((tag_id) => {
-          return {
-            product_id: product.id,
-            tag_id,
-          };
-        });
-        return ProductTag.bulkCreate(productTagIdArr);
-      }
-      // if no product tags, just respond
-      res.status(200).json(product);
-    })
-    .then((productTagIds) => res.status(200).json(productTagIds))
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+
+    res.status(200).json({ message: "Successfully created product." });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Failed to create product" });
+  }
 });
 
 // update a product
@@ -115,7 +112,10 @@ router.delete("/:id", async (req, res) => {
     const product = await Product.destroy({
       where: { id },
     });
-    res.status(200).json(product);
+    if (!product) {
+      res.status(404).json({ message: "No product with this id." });
+    }
+    res.status(200).json({ message: "Successfully deleted product." });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete product" });
   }
