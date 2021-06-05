@@ -103,8 +103,7 @@ router.put("/:id", async (req, res) => {
         createdNewProductTags,
       };
 
-      res.json({
-        updatedProductTags,
+      res.status(200).json({
         message: "Successfully updated Product.",
       });
     }
