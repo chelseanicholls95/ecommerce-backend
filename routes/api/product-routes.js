@@ -42,6 +42,7 @@ router.post("/", async (req, res) => {
       price: req.body.price,
       stock: req.body.stock,
       tagIds: req.body.tagIds,
+      category_id: req.body.category_id,
     };
 
     const product = await Product.create(newProduct);
