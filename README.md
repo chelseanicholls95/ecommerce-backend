@@ -2,6 +2,8 @@
 
 ## Description
 
+This project is the back-end functionality of an e-commerce website. It allows the user the get all, get one, add, update and delete any of the three components - categories, products and tags.
+
 ## Table of Contents
 
 [Description](#description)  
@@ -15,8 +17,9 @@
 
 - JavaScript
 - Node.js
-- SQL
 - MySQL
+- Sequelize
+- Express
 
 ## Getting Started
 
@@ -29,19 +32,21 @@ code .
 ### Run Application
 
 ```
+npm run seed
 npm run start
 ```
 
 ### Run Locally
 
 ```
-npm run dev
 npm install
+npm run seed
+npm run dev
 ```
 
 ## Link to Video of Working Application
 
-View the video of the working application [here]().
+View the video of the working application [here](https://drive.google.com/file/d/1OYpDoaZ1SesVRd6Xtj9aKARtI4RGxnDy/view?usp=sharing).
 
 ## License
 
