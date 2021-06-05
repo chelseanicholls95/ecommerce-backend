@@ -41,7 +41,10 @@ router.post("/", async (req, res) => {
     const tag = await Tag.create({
       tag_name,
     });
-    res.status(200).json({ message: "Successfully created tag." });
+    if (!tag) {
+      res.status(404).json({ message: "No tag with this id." });
+      res.status(200).json({ message: "Successfully created tag." });
+    }
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Failed to create tag" });
@@ -59,6 +62,9 @@ router.put("/:id", async (req, res) => {
         where: { id },
       }
     );
+    if (!tag) {
+      res.status(404).json({ message: "No tag with this id." });
+    }
     res.status(200).json({ message: "Successfully updated tag." });
   } catch (error) {
     res.status(500).json({ error: "Failed to update tag" });
