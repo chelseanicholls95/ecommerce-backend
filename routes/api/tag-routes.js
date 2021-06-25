@@ -18,10 +18,10 @@ router.get("/", async (req, res) => {
       ],
     });
 
-    res.status(200).json(tags);
+    return res.status(200).json(tags);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to get all tags" });
+    return res.status(500).json({ error: "Failed to get all tags" });
   }
 });
 
@@ -42,13 +42,13 @@ router.get("/:id", async (req, res) => {
     });
 
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id" });
+      return res.status(404).json({ message: "No tag with this id" });
     }
 
-    res.status(200).json(tag);
+    return res.status(200).json(tag);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to get tag" });
+    return res.status(500).json({ error: "Failed to get tag" });
   }
 });
 
@@ -62,13 +62,13 @@ router.post("/", async (req, res) => {
     });
 
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id" });
+      return res.status(404).json({ message: "No tag with this id" });
     }
 
-    res.status(200).json({ message: "Successfully created tag" });
+    return res.status(200).json({ message: "Successfully created tag" });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to create tag" });
+    return res.status(500).json({ error: "Failed to create tag" });
   }
 });
 
@@ -86,12 +86,12 @@ router.put("/:id", async (req, res) => {
     );
 
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id" });
+      return res.status(404).json({ message: "No tag with this id" });
     }
 
-    res.status(200).json({ message: "Successfully updated tag" });
+    return res.status(200).json({ message: "Successfully updated tag" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update tag" });
+    return res.status(500).json({ error: "Failed to update tag" });
   }
 });
 
@@ -104,9 +104,9 @@ router.delete("/:id", async (req, res) => {
       where: { id },
     });
 
-    res.status(200).json({ message: "Successfully deleted tag" });
+    return res.status(200).json({ message: "Successfully deleted tag" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete tag" });
+    return res.status(500).json({ error: "Failed to delete tag" });
   }
 });
 
