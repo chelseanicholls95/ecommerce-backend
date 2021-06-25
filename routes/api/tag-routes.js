@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { Product, Tag } = require("../../models");
+const { Product, Tag, Category } = require("../../models");
 
 const router = Router();
 
@@ -8,12 +8,20 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const tags = await Tag.findAll({
-      include: [{ model: Product }],
+      include: [
+        {
+          model: Product,
+          through: { attributes: [] },
+          attributes: { exclude: ["category_id"] },
+          include: { model: Category },
+        },
+      ],
     });
-    res.status(200).json(tags);
+
+    return res.status(200).json(tags);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to get all tags." });
+    return res.status(500).json({ error: "Failed to get all tags" });
   }
 });
 
@@ -21,16 +29,26 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
     const tag = await Tag.findByPk(id, {
-      include: [{ model: Product }],
+      include: [
+        {
+          model: Product,
+          through: { attributes: [] },
+          attributes: { exclude: ["category_id"] },
+          include: { model: Category },
+        },
+      ],
     });
+
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id." });
+      return res.status(404).json({ message: "No tag with this id" });
     }
-    res.status(200).json(tag);
+
+    return res.status(200).json(tag);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to get tag" });
+    return res.status(500).json({ error: "Failed to get tag" });
   }
 });
 
@@ -38,16 +56,19 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { tag_name } = req.body;
+
     const tag = await Tag.create({
       tag_name,
     });
+
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id." });
+      return res.status(500).json({ error: "Failed to create tag" });
     }
-    res.status(200).json({ message: "Successfully created tag." });
+
+    return res.status(200).json({ message: "Successfully created tag" });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Failed to create tag" });
+    return res.status(500).json({ error: "Failed to create tag" });
   }
 });
 
@@ -56,18 +77,21 @@ router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { tag_name } = req.body;
+
     const tag = await Tag.update(
       { tag_name },
       {
         where: { id },
       }
     );
+
     if (!tag) {
-      res.status(404).json({ message: "No tag with this id." });
+      return res.status(500).json({ error: "Failed to update tag" });
     }
-    res.status(200).json({ message: "Successfully updated tag." });
+
+    return res.status(200).json({ message: "Successfully updated tag" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update tag" });
+    return res.status(500).json({ error: "Failed to update tag" });
   }
 });
 
@@ -75,12 +99,14 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const tag = await Tag.destroy({
+
+    await Tag.destroy({
       where: { id },
     });
-    res.status(200).json({ message: "Successfully deleted tag." });
+
+    return res.status(200).json({ message: "Successfully deleted tag" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete tag" });
+    return res.status(500).json({ error: "Failed to delete tag" });
   }
 });
 

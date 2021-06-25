@@ -20,7 +20,7 @@ const init = async () => {
       console.log(`App listening on port ${PORT}!`);
     });
   } catch (error) {
-    console.log(`Connection to DB failed: ${err.message}`);
+    console.log(`Connection to DB failed: ${error.message}`);
   }
 };
 
