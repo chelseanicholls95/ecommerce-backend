@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {
     });
 
     if (!tag) {
-      return res.status(404).json({ message: "No tag with this id" });
+      return res.status(500).json({ error: "Failed to create tag" });
     }
 
     return res.status(200).json({ message: "Successfully created tag" });
@@ -86,7 +86,7 @@ router.put("/:id", async (req, res) => {
     );
 
     if (!tag) {
-      return res.status(404).json({ message: "No tag with this id" });
+      return res.status(500).json({ error: "Failed to update tag" });
     }
 
     return res.status(200).json({ message: "Successfully updated tag" });
